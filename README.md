@@ -1,20 +1,15 @@
-Erlang Project Skeleton
-=====
-First install rebar3 by following the [Getting started guide](https://rebar3.readme.io/docs/getting-started) in rebar3 documentation.
+# RandomFruitDB
 
-Get dependencies
------
+## Team Members
 
-    $ rebar3 get-deps
-Build
------
+* Tristan Henchoz tristan.henchoz@unifr.ch
+* Arthur Morgan arthur.morgan@unifr.ch
+* Mattéo Bonvin matteo.bonvin@unifr.ch
 
-    $ rebar3 compile
-Run
------
+## Description
 
-    $ rebar3 shell
-
-Make sure health is ok
------
-[http://localhost:8080/health](http://localhost:8080/health)
+The first idea for our project would be a distributed database. This database
+will distributed file and keep them available at all time (or close to). The initial
+objective would be to make it run, being able to store files and access it, then to
+update it without conflict. If we’re still running, we could enable better option, like
+same time same file modification possibility, or build an other system using our db.
