@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>RandomFruitDB</title>
+  <style>
+  body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #212121;
+    color: white;
+  }
+  h1 {
+    text-align: center;
+    color: #00b8d4;
+    font-size: 32px;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  input[type="text"], input[type="file"] {
+    width: 300px;
+    height: 40px;
+    font-size: 16px;
+    border: 2px solid #00b8d4;
+    border-radius: 4px;
+    padding: 8px;
+    margin: 8px 0;
+    background-color: #303030;
+    color: white;
+  }
+  button {
+    width: 100px;
+    height: 40px;
+    font-size: 16px;
+    background-color: #00b8d4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+  button:hover {
+    background-color: #0097a7;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  button:active {
+    background-color: #00838f;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  #stored-documents {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  #stored-documents p {
+    background-color: #00b8d4;
+    color: white;
+    font-size: 16px;
+    padding: 8px;
+    margin: 8px 0;
+    border-radius: 4px;
+  }
+  #stored-documents p + p {
+    border-top: 1px solid white;
+  }
+</style>
+</head>
+<body>
+  <h1>RandomFruitDB</h1>
+
+  <form id="search-form">
+    <label for="search-input">Search:</label><br>
+    <input type="text" id="search-input" name="search"><br>
+    <button type="submit">Search</button>
+  </form>
+
+  <hr>
+
+  <form id="add-form" enctype="multipart/form-data">
+    <label for="file-input">Add file:</label><br>
+    <input type="file" id="file-input" name="file"><br>
+    <button type="submit">Add</button>
+  </form>
+
+  <hr>
+
+  <h2>Stored documents:</h2>
+  <div id="stored-documents"></div>
+
+  <script>
+    // Add event listeners for the search and add forms
+    document.getElementById('search-form').addEventListener('submit', searchHandler);
+    document.getElementById('add-form').addEventListener('submit', addHandler);
+
+    // Search handler function
+    function searchHandler(event) {
+      event.preventDefault(); // prevent the form from submitting
+
+      // Get the search term from the input field
+      const searchTerm = document.getElementById('search-input').value;
+
+      // Send a request to the server to search the database
+      // and display the results
+      fetch('/search', {
+        method: 'POST',
+        body: JSON.stringify({searchTerm: searchTerm}),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Display the search results in the stored documents section
+        const storedDocumentsDiv = document.getElementById('stored-documents');
+        storedDocumentsDiv.innerHTML = ''; // clear the previous search results
+        data.results.forEach(result => {
+          storedDocumentsDiv.innerHTML += `<p>${result}</p>`;
+        });
+      });
+    }
+
+    // Add handler function
+    function addHandler(event) {
+      event.preventDefault(); // prevent the form from submitting
+
+      // Get the file from the input field
+      const file = document.getElementById('file-input').files[0];
+
+      // Display the name of the selected file in the stored documents section
+      const storedDocumentsDiv = document.getElementById('stored-documents');
+      storedDocumentsDiv.innerHTML += `<p>${file.name}</p>`;
+
+      // Clear the file input field
+      document.getElementById('file-input').value = '';
+
+      // Send a request to the server to add the file to the database
+      const formData = new FormData();
+      formData.append('file', file);
+      fetch('/add', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Send a notification
+        alert("Added to the database!");
+      });
+    }
+  </script>
+
+      </body>
+</html>
