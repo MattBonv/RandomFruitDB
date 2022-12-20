@@ -5,7 +5,7 @@ defmodule Nodee do
   ###=============================================================================
 
   def winit(person) do
-    spawn(__MODULE__, :nodee, person)
+    spawn(__MODULE__, :nodee, [person])
   end
 
   def nodee({id, name}) do
