@@ -39,6 +39,10 @@ defmodule Dispatcher do
     end
   end
 
+  ###=============================================================================
+  ### Default simple helper fct, lookFile not working for return (use of self)
+  ###=============================================================================
+
   def addFile({id, machine}, filename) do
     send({id, machine}, {:addFile, {filename}})
   end

@@ -66,6 +66,10 @@ defmodule Communication do
     end
   end
 
+  ###=============================================================================
+  ### At startup, to get previous and next node on the ring
+  ###=============================================================================
+
   def appearancefirst({name, host}) do
     # wait for another node
     receive do
@@ -87,6 +91,10 @@ defmodule Communication do
         ringReceive({name, host}, {nextnode, prevnode}, [])
     end
   end
+
+  ###=============================================================================
+  ### During run, to keep and update the previous and next node
+  ###=============================================================================
 
   def updateNext({name, host}, {nextnode, prevnode}, ownfiles) do
     # check if we are still the previous node for the following one
