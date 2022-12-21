@@ -4,9 +4,9 @@ defmodule Dispatcher do
   ### Main dispatcher, create and maintain the ring
   ###=============================================================================
 
-  def initiate({name, host}) do
+  def initiate(host) do
     # spawn a new node
-    spawn(__MODULE__, :dispatch, [{name, host}, []])
+    Process.register(spawn(__MODULE__, :dispatch, [{:dispatcher, host}, []]), :dispatcher)
   end
 
   def dispatch({name, host}, nodes) do
@@ -33,9 +33,20 @@ defmodule Dispatcher do
             # send its own next node
             send({nname, nhost}, {:init, nextnode})
         end
-
         # add it in our ring
         dispatch({name, host}, [{nname, nhost}|nodes])
+
+      {:addFile, {filename}} ->
+        # store file in a random nodes
+        # random for v0.1
+        node = Enum.random(nodes)
+        send(node, {:addFile, {filename}})
+        dispatch({name, host}, nodes)
+
+      {:requestFile, filename} ->
+        # search a given file
+        node = List.first(nodes)
+        send(node, {:requestFile, filename, {{name, host},{name, host}}})
     end
   end
 
@@ -43,12 +54,12 @@ defmodule Dispatcher do
   ### Default simple helper fct, lookFile not working for return (use of self)
   ###=============================================================================
 
-  def addFile({id, machine}, filename) do
-    send({id, machine}, {:addFile, {filename}})
+  def addFile(filename) do
+    send(:dispatcher, {:addFile, {filename}})
   end
 
-  def lookFile({id, machine}, filename) do
-    send({id, machine}, {:requestFile, filename {self(), self()}})
+  def lookFile(filename) do
+    send(:dispatcher, {:requestFile, filename})
   end
 
 end
