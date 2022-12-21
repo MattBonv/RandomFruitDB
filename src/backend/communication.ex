@@ -4,6 +4,11 @@ defmodule Communication do
   ### Basics inter-node communication
   ###=============================================================================
 
+  def sendFile({requester, mainrequest}, filename) do
+    # this fct should retreive the data and send it to the requester
+    send(requester, {:findFile, filename, mainrequest})
+  end
+
   def ringReceive({name, host}, {nextnode, prevnode}, ownfiles) do
     # wait for msg reception
     # {id, name} : itself
@@ -18,6 +23,18 @@ defmodule Communication do
         IO.puts("New file #{filename}")
         ringReceive({name, host}, {nextnode, prevnode}, [filename | ownfiles])
 
+      {:requestFile, filename, requester}} ->
+        # from dispatch
+        if Enum.member?(ownfiles, filename) do
+          # own file
+          IO.puts("Find file #{filename}")
+          sendFile({requester, mainrequest}, filename)
+          ringReceive({name, host}, {nextnode, prevnode}, ownfiles)
+        else
+          send(nextnode, {:requestFile, filename, {{name, host}, requester}})
+          ringReceive({name, host}, {nextnode, prevnode}, ownfiles)
+        end
+
       {:requestFile, filename, {requester, mainrequest}} ->
         # looking for a file
         cond do
@@ -29,9 +46,8 @@ defmodule Communication do
 
           Enum.member?(ownfiles, filename) ->
             # own file
-            # TODO: retreive file and send
             IO.puts("Find file #{filename}")
-            send(requester, {:findFile, filename, mainrequest})
+            sendFile({requester, mainrequest}, filename)
             ringReceive({name, host}, {nextnode, prevnode}, ownfiles)
 
           true ->

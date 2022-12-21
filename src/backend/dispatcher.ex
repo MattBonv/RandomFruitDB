@@ -46,7 +46,7 @@ defmodule Dispatcher do
       {:requestFile, filename} ->
         # search a given file
         node = List.first(nodes)
-        send(node, {:requestFile, filename, {{name, host},{name, host}}})
+        send(node, {:requestFile, filename, {name, host}})
     end
   end
 
