@@ -1,3 +1,11 @@
+# latex compiled file
+*.pdf
+*.aux
+*.log
+*.out
+*.toc
+
+
 .rebar3
 _*
 .eunit
