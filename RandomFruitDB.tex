@@ -5,29 +5,22 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 
-\title{RandomFruitDB}
-\author{}
-\date{}
+\usepackage{listings}
+\usepackage{hyperref}
+
+\newcommand{\mail}[1]{{\href{mailto:#1}{#1}}}
+
 
 \begin{document}
-
-\begin{titlepage}
-\centering
-\vspace*{1cm}
-
-{\Large \bfseries RandomFruitDB}
-
-\vspace{1cm}
-
-{\large Tristan Henchoz, Arthur Morgan, Mattéo Bonvin}
-
-\vspace{1cm}
-
-{\small 21.12.2022}
-
-\end{titlepage}
+\title{RandomFruitDB}
+\author{Tristan Henchoz, Arthur Morgan, Mattéo Bonvin
+	\\ {\small\mail{tristan.henchoz@unifr.ch, arthur.morgan@unifr.ch, matteo.bonvin@unifr.ch}}}
+\date{\today}
 
 \maketitle
+\tableofcontents
+\pagebreak
+
 
 \section{Problem Statement}
 
@@ -78,6 +71,24 @@ Our system would therefore be part of the NoSQL distributed databases with a Sha
 
 \section{Presentation of the solution}
 
+Our solution bypass a number of rule to create a real chord system for simplification. A big simplification is the order of the node and the file classification, as it is done randomly to avoid dealing with hash calculation. The solution is therefore simple, but it keeps its academic purpose.
+
+A big simplification on our side is the creation and the use of a "dispatcher", which manage to add a new node in the ring and manage data communication with the ring. This system is purely here for simplification, and doesn't have any academic interest.
+
+Our simplified node will connect directly to the dispatcher when created, and the later will assigned to them a position in the ring. The node will then take care to notify the other node of its presence. Our ring could in part refresh and correct its state (next node) on its own, but the feature wasn't turn on to avoid unexpected error as it is not fully fonctionnal.
+
+The main part of our system is the possibility to retreive data. To store a file is simple, as the dispatcher select a node randomly to store it (to avoid the use of a hash table). To retreive some data, the dispatcher will randomly ask a node. The node will either answer with the file, otherwise it will ask its next node. A condition is put to avoid circular search, and when a file is found it is send directly to the dispatcher and does not circle back.
+
+
+\section{Validation \& evaluation of the solution}
+
+Our solution is currently not working, mainly because of the treatment of files using Elixir. But we manage to create a ring, being to store data (currently file names only) on multi node, and to retreive this data without having to connect to the node on which the information is located. 
+
+
+\section{Discussion of the results}
+
+As our solution doesn't create a finished and out-of-the box system, it reachs its mains points and can be further developp.
+
 
 \pagebreak
 
@@ -89,5 +100,13 @@ Y. Zhou, Q. Chen, B. Shan, F. Jiang and Y. Pang, "A Distributed Storage Strategy
 \bibitem{reference_3}
 K. Kaur and M. Sachdeva, "Performance evaluation of NewSQL databases," 2017 International Conference on Inventive Systems and Control (ICISC), 2017, pp. 1-5, doi: 10.1109/ICISC.2017.8068585.
 \end{thebibliography}
+
+\pagebreak
+
+\appendix
+
+\section{Readme}
+
+\lstinputlisting{src/backend/README.md}
 
 \end{document}
