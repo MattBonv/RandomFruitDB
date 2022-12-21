@@ -37,11 +37,10 @@ When a person wants to join the network, they send a request to another person t
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=\textwidth]{ChordAlgorithm.png}
+\includegraphics[width=\textwidth]{img/ChordAlgorithm}
 \caption{A Bidirectional Chord System Based on Base-k Finger Table}
 \label{figure 1}
 \end{figure}
-
 
 \pagebreak
 
@@ -75,10 +74,23 @@ Our solution bypass a number of rule to create a real chord system for simplific
 
 A big simplification on our side is the creation and the use of a "dispatcher", which manage to add a new node in the ring and manage data communication with the ring. This system is purely here for simplification, and doesn't have any academic interest.
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{img/dispatch}
+\caption{A part of the dispatcher}
+\label{figure 2}
+\end{figure}
+
 Our simplified node will connect directly to the dispatcher when created, and the later will assigned to them a position in the ring. The node will then take care to notify the other node of its presence. Our ring could in part refresh and correct its state (next node) on its own, but the feature wasn't turn on to avoid unexpected error as it is not fully fonctionnal.
 
 The main part of our system is the possibility to retreive data. To store a file is simple, as the dispatcher select a node randomly to store it (to avoid the use of a hash table). To retreive some data, the dispatcher will randomly ask a node. The node will either answer with the file, otherwise it will ask its next node. A condition is put to avoid circular search, and when a file is found it is send directly to the dispatcher and does not circle back.
 
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{/img/dispatch2}
+	\caption{A part of the dispatcher}
+	\label{figure 3}
+\end{figure}
 
 \section{Validation \& evaluation of the solution}
 
