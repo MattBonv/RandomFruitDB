@@ -102,7 +102,8 @@ The page has three parts: the first one allows to search the database and should
 Our solution is currently not working, mainly because of the treatment of files using Elixir. We did manage to implement the ring, it can store data (currently file names only) on multi node, and retreive this data without having to connect to the node on which the information is located. 
 \\\\
 The part we struggled with the most is the communication between the frontend and the backend. The frontend sends requests to the backend but we couldn't get implement a request handler that would properly work and display the results in the browser.
-
+\\\\
+We did manage to achieve one of our main goals, which was to implement a simplified chord system. Without the use of a hash table, the ring doesn't maintain a stable state and files can't actually be used, but even with these limitation, the academic purpose of understading how chord systems, it's limitations and difficulties, was still achieved.
 
 \section{Discussion of the results}
 
@@ -136,13 +137,13 @@ Image Reference : H. Yan, Y. Jiang and X. Zhou, "A Bidirectional Chord System Ba
   \item Start Docker containers in network
   \begin{itemize}
    \item First terminal
-   \item[] \texttt{docker run –rm -it –name elixir1 -h host1 –net elixir-net elixir /bin/bash }
+   \item[] \texttt{docker run -rm -it -name elixir1 -h host1 -net elixir-net elixir /bin/bash }
    \item Second terminal
-   \item[] \texttt{docker run –rm -it –name elixir1 -h host1 –net elixir-net elixir /bin/bash}
+   \item[] \texttt{docker run -rm -it -name elixir1 -h host1 -net elixir-net elixir /bin/bash}
    \item Third terminal
-   \item[] \texttt{docker run –rm -it –name elixir3 -h host3 –net elixir-net elixir /bin/bash}
+   \item[] \texttt{docker run -rm -it -name elixir3 -h host3 -net elixir-net elixir /bin/bash}
    \item Fourth terminal
-   \item[] \texttt{docker run –rm -it –name elixir4 -h host4 –net elixir-net elixir /bin/bash}
+   \item[] \texttt{docker run -rm -it -name elixir4 -h host4 -net elixir-net elixir /bin/bash}
   \end{itemize}
   \item Run elixir
   \begin{itemize}
@@ -167,35 +168,40 @@ Image Reference : H. Yan, Y. Jiang and X. Zhou, "A Bidirectional Chord System Ba
    \item[] \texttt{Node.ping(:bar@host2)}
   \end{itemize}
   \begin{enumerate}
-   \item Copy file (assuming file fifo.erl is in the local directory)
-   \item[] \texttt{docker cp communication.ex elixir1:communication.ex
-   docker cp communication.ex elixir2:communication.ex
-   docker cp communication.ex elixir3:communication.ex
-   docker cp nodes.ex elixir1:nodes.ex
-   docker cp nodes.ex elixir2:nodes.ex
-   docker cp nodes.ex elixir3:nodes.ex
-   docker cp dispatcher.ex elixir4:dispatcher.ex}
+   \item Copy file (assuming the file are in the local directory)
+   \item[] \texttt{docker cp communication.ex elixir1:communication.ex}
+   \item[] \texttt{docker cp communication.ex elixir2:communication.ex}
+   \item[] \texttt{docker cp communication.ex elixir3:communication.ex}
+   \item[] \texttt{docker cp nodes.ex elixir1:nodes.ex}
+   \item[] \texttt{docker cp nodes.ex elixir2:nodes.ex}
+   \item[] \texttt{docker cp nodes.ex elixir3:nodes.ex}
+   \item[] \texttt{docker cp dispatcher.ex elixir4:dispatcher.ex}
    \item Compile DB program
    \begin{itemize}
    \item First, second and third terminal
-   \item[] \texttt{c(``communication.ex'')c(``nodes.ex'')}
+   \item[] \texttt{c("communication.ex")}
+   \item[] \texttt{c("nodes.ex")}
    \item Fourth terminal
-   \item[] \texttt{c(``dispatcher.ex'')}
+   \item[] \texttt{c("dispatcher.ex")}
    \end{itemize}
 
    \item Run DB Program
   \begin{itemize}
+   \item Fourth terminal (has to be done first)
+   \item[] \texttt{Dispatcher.initiate(:dis@host4)}
    \item First terminal
    \item[] \texttt{Process.register(Nodee.node\_init({:n1, :foo@host1}, {:dispatcher, :dis@host4}), :n1)}
    \item Second terminal
    \item[] \texttt{Process.register(Nodee.node\_init({:n2, :bar@host2}, {:dispatcher, :dis@host4}), :n2)}
    \item Third terminal
    \item[] \texttt{Process.register(Nodee.node\_init({:n3, :bof@host3}, {:dispatcher, :dis@host4}), :n3)}
-   \item Fourth terminal
-   \item[] \texttt{Dispatcher.initiate(:dis@host4)}
   \end{itemize}
   \item Usage in fourth terminal
-  \item[] \texttt{Dispatcher.addFile(“SampleFile1”) Dispatcher.addFile(“SampleFile2”) Dispatcher.lookFile(“SampleFile1”)}
+  \item[] Add files:
+  \item[] \texttt{Dispatcher.addFile("SampleFile1”)}
+  \item[] \texttt{Dispatcher.addFile("SampleFile2”)}
+  \item[] Find files:
+  \item[] \texttt{Dispatcher.lookFile("SampleFile1”)}
   \end{enumerate}
   \item Clean up
   \item[] \texttt{docket network rm elixir-net}
