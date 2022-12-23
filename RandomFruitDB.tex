@@ -67,9 +67,18 @@ Another way to classify distributed databases is by the way they store and repli
 \end{enumerate}
 Our system would therefore be part of the NoSQL distributed databases with a Shared-nothing architecture
 
-\pagebreak
 
 \section{Presentation of the solution}
+Our distributed database is implemented by a simplified chord node. We successfully create a ring and nodes within it, as well as communication between the nodes on the ring. The creation of the nodes and ring, as well as sending requests to the node is done by a dispatcher.
+\\\\
+When putting a file in our database, the dispatcher will select a node in the ring and assign the file to it. When looking for a file in our database, the dispatcher will select a node, but if the node doesn't have the file it will ask the following node in the ring if it has the file. When a node with the file has been found it will answer to the dispatcher directly. We also aimed to have a hash file that would have helped distribute the files more evenly and find them more efficiently. Having a hash table would also have allowed for better integrity, as we could have correctly updated files and avoid conflicts.
+\\\\
+We also wanted to use MongoDB as a backend database to properly store each node's data for simplificication.
+\\\\
+On the frontend we aimed to have a web app interface that we can use to store and find files.
+\\\\
+
+\section{Validation \& evaluation of the solution}
 
 Our solution bypasses a number of rules to create a simplificication of a real chord system. One of these simplificications is the order of the node and the file classification, as it is done randomly to avoid dealing with hash calculation. The solution is therefore simple, but it keeps its academic purpose.
 \\\\
@@ -97,17 +106,16 @@ The page has three parts: the first one allows to search the database and should
 \end{figure}
 
 
-\section{Validation \& evaluation of the solution}
-
-Our solution is currently not working, mainly because of the treatment of files using Elixir. We did manage to implement the ring, it can store data (currently file names only) on multi node, and retreive this data without having to connect to the node on which the information is located. 
+\section{Discussion of the results}
+Our solution is currently not working, mainly because of the treatment of files using Elixir. We did manage to implement the ring, it can store data (currently file names only) on multi node, and retreive this data without having to connect to the node on which the information is located.
 \\\\
 The part we struggled with the most is the communication between the frontend and the backend. The frontend sends requests to the backend but we couldn't get implement a request handler that would properly work and display the results in the browser.
 \\\\
-We did manage to achieve one of our main goals, which was to implement a simplified chord system. Without the use of a hash table, the ring doesn't maintain a stable state and files can't actually be used, but even with these limitation, the academic purpose of understading how chord systems, it's limitations and difficulties, was still achieved.
-
-\section{Discussion of the results}
-
 Our solution doesn't create a finished and out-of-the box system. The main issue is the lack of backend-frontend communication. Because we weren't able to achieve our base objectives, there is still a lot of room to improve and further develop.
+\\\\
+We did manage to achieve one of our main goals, which was to implement a simplified chord system. Without the use of a hash table, the ring doesn't maintain a stable state and files can't actually be used, but even with these limitation, the academic purpose of understading chord systems, it's limitations and difficulties, was still achieved.
+
+
 
 
 \pagebreak
