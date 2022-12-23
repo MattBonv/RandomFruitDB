@@ -46,7 +46,7 @@ docker cp src/backend/dispatcher.ex elixir4:dispatcher.ex
 # a) First, Second and Third terminal
 c("communication.ex")
 c("nodes.ex")
-# b) Second terminal
+# b) Fourth terminal
 c("dispatcher.ex")
 
 # 4.3 Run DB program
@@ -59,7 +59,7 @@ Process.register(Nodee.node_init({:n2, :bar@host2}, {:dispatcher, :dis@host4}), 
 # d) Third terminal
 Process.register(Nodee.node_init({:n3, :bof@host3}, {:dispatcher, :dis@host4}), :n3)
 
-# 4.4 Usage in Forth terminal
+# 4.4 Usage in Fourth terminal
 Dispatcher.addFile("SampleFile1")
 Dispatcher.addFile("SampleFile2")
 Dispatcher.lookFile("SampleFile1")
