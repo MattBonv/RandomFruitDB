@@ -34,13 +34,13 @@ Node.ping(:bar@host2)
 Node.ping(:bar@host2)
 
 # 4.1 Copy file (assuming file fifo.erl is in the local directory)
-docker cp communication.ex elixir1:communication.ex
-docker cp communication.ex elixir2:communication.ex
-docker cp communication.ex elixir3:communication.ex
-docker cp nodes.ex elixir1:nodes.ex
-docker cp nodes.ex elixir2:nodes.ex
-docker cp nodes.ex elixir3:nodes.ex
-docker cp dispatcher.ex elixir4:dispatcher.ex
+docker cp src/backend/communication.ex elixir1:communication.ex
+docker cp src/backend/communication.ex elixir2:communication.ex
+docker cp src/backend/communication.ex elixir3:communication.ex
+docker cp src/backend/nodes.ex elixir1:nodes.ex
+docker cp src/backend/nodes.ex elixir2:nodes.ex
+docker cp src/backend/nodes.ex elixir3:nodes.ex
+docker cp src/backend/dispatcher.ex elixir4:dispatcher.ex
 
 # 4.2 Compile DB program
 # a) First, Second and Third terminal
@@ -48,16 +48,18 @@ c("communication.ex")
 c("nodes.ex")
 # b) Second terminal
 c("dispatcher.ex")
-# 4.2 Run DB program
-# a) First terminal
-Process.register(Nodee.node_init({:n1, :foo@host1}, {:dispatcher, :dis@host4}), :n1)
-# b) Second terminal
-Process.register(Nodee.node_init({:n2, :bar@host2}, {:dispatcher, :dis@host4}), :n2)
-# c) Third terminal
-Process.register(Nodee.node_init({:n3, :bof@host3}, {:dispatcher, :dis@host4}), :n3)
-# d) Forth terminal
+
+# 4.3 Run DB program
+# a) Forth terminal
 Dispatcher.initiate(:dis@host4)
-# 4.3 Usage in Forth terminal
+# b) First terminal
+Process.register(Nodee.node_init({:n1, :foo@host1}, {:dispatcher, :dis@host4}), :n1)
+# c) Second terminal
+Process.register(Nodee.node_init({:n2, :bar@host2}, {:dispatcher, :dis@host4}), :n2)
+# d) Third terminal
+Process.register(Nodee.node_init({:n3, :bof@host3}, {:dispatcher, :dis@host4}), :n3)
+
+# 4.4 Usage in Forth terminal
 Dispatcher.addFile("SampleFile1")
 Dispatcher.addFile("SampleFile2")
 Dispatcher.lookFile("SampleFile1")

@@ -4,11 +4,6 @@ defmodule Communication do
   ### Basics inter-node communication
   ###=============================================================================
 
-  def sendFile({requester, mainrequest}, filename) do
-    # this fct should retreive the data and send it to the requester
-    send(requester, {:findFile, filename, mainrequest})
-  end
-
   def ringReceive({name, host}, {nextnode, prevnode}, ownfiles) do
     # wait for msg reception
     # {id, name} : itself
@@ -23,12 +18,12 @@ defmodule Communication do
         IO.puts("New file #{filename}")
         ringReceive({name, host}, {nextnode, prevnode}, [filename | ownfiles])
 
-      {:requestFile, filename, requester}} ->
+      {:requestFileDis, filename, requester} ->
         # from dispatch
         if Enum.member?(ownfiles, filename) do
           # own file
           IO.puts("Find file #{filename}")
-          sendFile({requester, mainrequest}, filename)
+          send(requester, {:findFile, filename})
           ringReceive({name, host}, {nextnode, prevnode}, ownfiles)
         else
           send(nextnode, {:requestFile, filename, {{name, host}, requester}})
@@ -47,7 +42,7 @@ defmodule Communication do
           Enum.member?(ownfiles, filename) ->
             # own file
             IO.puts("Find file #{filename}")
-            sendFile({requester, mainrequest}, filename)
+            send(mainrequest, {:findFile, filename})
             ringReceive({name, host}, {nextnode, prevnode}, ownfiles)
 
           true ->
@@ -56,11 +51,6 @@ defmodule Communication do
             send(nextnode, {:requestFile, filename, {requester, mainrequest}})
             ringReceive({name, host}, {nextnode, prevnode}, ownfiles)
         end
-
-      {:findFile, filename, mainrequest} ->
-        # send the main one the found file
-        send(mainrequest, {:findFile, filename})
-        ringReceive({name, host}, {nextnode, prevnode}, ownfiles)
 
       {:imprevious?, {pname, phost}} ->
         # send previous node

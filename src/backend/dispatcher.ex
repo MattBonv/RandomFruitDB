@@ -20,12 +20,6 @@ defmodule Dispatcher do
             # nothing, waiting for the next one
             send({nname, nhost}, {:initfirst})
 
-          1 ->
-            # exchange
-            othernode = List.first(nodes)
-            # send its own next node
-            send({nname, nhost}, {:init, othernode})
-
           _ ->
             # get next node, default first of the list
             # for now fix but should use hash
@@ -46,7 +40,18 @@ defmodule Dispatcher do
       {:requestFile, filename} ->
         # search a given file
         node = List.first(nodes)
-        send(node, {:requestFile, filename, {name, host}})
+        send(node, {:requestFileDis, filename, {name, host}})
+        dispatch({name, host}, nodes)
+
+      {:findFile, filename} ->
+        # file was found
+        IO.puts("#{filename} was found")
+        dispatch({name, host}, nodes)
+
+      {:filenotfound, filename} ->
+        # file not found
+        IO.puts("#{filename} was not found...")
+        dispatch({name, host}, nodes)
     end
   end
 
