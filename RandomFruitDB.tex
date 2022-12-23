@@ -128,8 +128,78 @@ Image Reference : H. Yan, Y. Jiang and X. Zhou, "A Bidirectional Chord System Ba
 
 \appendix
 
-\section{Readme}
+ \section{Readme}
+ To make a 3 nodes circle:
+ \begin{enumerate}
+  \item Create bridge network
+  \item[] \texttt{docker network create elixir-net docker network inspect elixir-net }
+  \item Start Docker containers in network
+  \begin{itemize}
+   \item First terminal
+   \item[] \texttt{docker run –rm -it –name elixir1 -h host1 –net elixir-net elixir /bin/bash }
+   \item Second terminal
+   \item[] \texttt{docker run –rm -it –name elixir1 -h host1 –net elixir-net elixir /bin/bash}
+   \item Third terminal
+   \item[] \texttt{docker run –rm -it –name elixir3 -h host3 –net elixir-net elixir /bin/bash}
+   \item Fourth terminal
+   \item[] \texttt{docker run –rm -it –name elixir4 -h host4 –net elixir-net elixir /bin/bash}
+  \end{itemize}
+  \item Run elixir
+  \begin{itemize}
+   \item First terminal
+   \item[] \texttt{iex --sname foo --cookie secret}
+   \item Second terminal
+   \item[] \texttt{iex --sname bar --cookie secret}
+   \item Third terminal
+   \item[] \texttt{iex --sname bof --cookie secret}
+   \item Fourth terminal
+   \item[] \texttt{iex --sname dis --cookie secret}
+  \end{itemize}
+  \item Run Program
+  \begin{itemize}
+   \item First terminal
+   \item[] \texttt{Node.ping(:bar@host2)}
+   \item Second terminal
+   \item[] \texttt{Node.ping(:bar@host2)}
+   \item Third terminal
+   \item[] \texttt{Node.ping(:bar@host2)}
+   \item Fourth terminal
+   \item[] \texttt{Node.ping(:bar@host2)}
+  \end{itemize}
+  \begin{enumerate}
+   \item Copy file (assuming file fifo.erl is in the local directory)
+   \item[] \texttt{docker cp communication.ex elixir1:communication.ex
+   docker cp communication.ex elixir2:communication.ex
+   docker cp communication.ex elixir3:communication.ex
+   docker cp nodes.ex elixir1:nodes.ex
+   docker cp nodes.ex elixir2:nodes.ex
+   docker cp nodes.ex elixir3:nodes.ex
+   docker cp dispatcher.ex elixir4:dispatcher.ex}
+   \item Compile DB program
+   \begin{itemize}
+   \item First, second and third terminal
+   \item[] \texttt{c(``communication.ex'')c(``nodes.ex'')}
+   \item Fourth terminal
+   \item[] \texttt{c(``dispatcher.ex'')}
+   \end{itemize}
 
-\lstinputlisting{src/backend/README.md}
+   \item Run DB Program
+  \begin{itemize}
+   \item First terminal
+   \item[] \texttt{Process.register(Nodee.node\_init({:n1, :foo@host1}, {:dispatcher, :dis@host4}), :n1)}
+   \item Second terminal
+   \item[] \texttt{Process.register(Nodee.node\_init({:n2, :bar@host2}, {:dispatcher, :dis@host4}), :n2)}
+   \item Third terminal
+   \item[] \texttt{Process.register(Nodee.node\_init({:n3, :bof@host3}, {:dispatcher, :dis@host4}), :n3)}
+   \item Fourth terminal
+   \item[] \texttt{Dispatcher.initiate(:dis@host4)}
+  \end{itemize}
+  \item Usage in fourth terminal
+  \item[] \texttt{Dispatcher.addFile(“SampleFile1”) Dispatcher.addFile(“SampleFile2”) Dispatcher.lookFile(“SampleFile1”)}
+  \end{enumerate}
+  \item Clean up
+  \item[] \texttt{docket network rm elixir-net}
+ \end{enumerate}
 
 \end{document}
+
