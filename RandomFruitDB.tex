@@ -23,15 +23,14 @@
 
 
 \section{Problem Statement}
-
 RandomFruitDB is a distributed database system using the Elixir programming language. A distributed database is a database that is distributed across multiple computers, usually connected through a network. In a distributed database system, data is stored and managed in multiple physical locations, each with its own database management system (DBMS). The goal of a distributed database is to provide users with the ability to access and modify data from anywhere while providing fault tolerance and data availability.
-
+\\\\
 Distributed databases differ from traditional centralized databases because they are designed to handle large amounts of data. Data and high-level consensus support distribution processes and distribution decision-making processes. They also typically provide features such as data partitioning and replication that allow data to be stored and accessed in multiple locations to improve performance and reliability.
-
+\\\\
 This type of database faces a number of challenges. Firstly, they are more complex to set up, maintain, and troubleshoot than traditional single-server databases. In addition, they can potentially suffer from performance problems due to their complexity. Another major challenge they face is data consistency. They must ensure that data updates from one computer are correctly applied to all other computers. Finally, scalability is an issue for a distributed database because adding new computers adds complexity and can result in performance losses.
-
+\\\\
 With RandomFruitDB, we try to solve these problems with the Chord algorithm. Peer-to-peer file sharing systems use the Distributed Hash Table (DHT), which is a Chord algorithm. Even though the network is constantly being joined and left, this allows the network to efficiently access and receive information from other networks. Each node has a unique ID. A large number is usually chosen from a random distribution. Each ID is higher than the previous one and lower than the next in a logical hierarchy. This space is called the code space. A list of other nodes in the network is maintained in a table called a fingerprint. A hash table is used to route data requests in the network.
-
+\\\\
 When a person wants to join the network, they send a request to another person to find a successor. The location of the new node is reflected in its fingerprints. To receive data from the network, a node checks the data store to see if it is available. The request is sent to the next highest queue ID. If the data is not in the network, this process is repeated. The ability to efficiently manage nodes entering and leaving the network is an important feature of the Chord Algorithm. The proxy takes and updates the finger table when a node is offline. The finger table is updated when a new node joins the network. The Chord is an efficient way to access and get information from each other. It is used in many distribution systems. 
 \cite{ref1}
 
@@ -72,13 +71,13 @@ Our system would therefore be part of the NoSQL distributed databases with a Sha
 
 \section{Presentation of the solution}
 
-Our solution bypass a number of rule to create a real chord system for simplification. A big simplification is the order of the node and the file classification, as it is done randomly to avoid dealing with hash calculation. The solution is therefore simple, but it keeps its academic purpose.
-
-A big simplification on our side is the creation and the use of a "dispatcher", which manage to add a new node in the ring and manage data communication with the ring. This system is purely here for simplification, and doesn't have any academic interest.
-
-Our simplified node will connect directly to the dispatcher when created, and the later will assigned to them a position in the ring. The node will then take care to notify the other node of its presence. Our ring could in part refresh and correct its state (next node) on its own, but the feature wasn't turn on to avoid unexpected error as it is not fully fonctionnal.
-
-The main part of our system is the possibility to retreive data. To store a file is simple, as the dispatcher select a node randomly to store it (to avoid the use of a hash table). To retreive some data, the dispatcher will randomly ask a node. The node will either answer with the file, otherwise it will ask its next node. A condition is put to avoid circular search, and when a file is found it is send directly to the dispatcher and does not circle back.
+Our solution bypasses a number of rules to create a simplificication of a real chord system. One of these simplificications is the order of the node and the file classification, as it is done randomly to avoid dealing with hash calculation. The solution is therefore simple, but it keeps its academic purpose.
+\\\\
+Another simplificication we made is the creation and the use of a "dispatcher", which manages adding new nodes in the ring and manages data communication within the ring. This system is purely here for simplicity, and doesn't have any academic interest.
+\\\\
+Our simplified node will connect directly to the dispatcher when created, and the latter will assign to them a position in the ring. The node will then take care of notifying the other nodes of its presence. Our ring could in part refresh and correct its state (next node) on its own, but the feature wasn't developed enough to be able to avoid some unexpected errors.
+\\\\
+The main part of our system is the possibility to retreive data. Storing a file is simple, as the dispatcher randomly selects a node to store it (to avoid the use of a hash table). To retreive data, the dispatcher will randomly ask a node. The node will either answer with the file or it will ask the next node for it. A condition is put to avoid circular search, and when a file is found it is send directly to the dispatcher and does not circle back.
 
 \begin{figure}[!htbp]
   \centering
@@ -100,14 +99,14 @@ The page has three parts: the first one allows to search the database and should
 
 \section{Validation \& evaluation of the solution}
 
-Our solution is currently not working, mainly because of the treatment of files using Elixir. But we manage to create a ring, being to store data (currently file names only) on multi node, and to retreive this data without having to connect to the node on which the information is located. 
-
-The part that gives us the most trouble on this side is the communication between the frontend and the backend. The frontend sends requests to the backend but we can't get that request to work to display the results in the browser.
+Our solution is currently not working, mainly because of the treatment of files using Elixir. We did manage to implement the ring, it can store data (currently file names only) on multi node, and retreive this data without having to connect to the node on which the information is located. 
+\\\\
+The part we struggled with the most is the communication between the frontend and the backend. The frontend sends requests to the backend but we couldn't get implement a request handler that would properly work and display the results in the browser.
 
 
 \section{Discussion of the results}
 
-As our solution doesn't create a finished and out-of-the box system, it reachs its mains points and can be further developp.
+Our solution doesn't create a finished and out-of-the box system. The main issue is the lack of backend-frontend communication. Because we weren't able to achieve our base objectives, there is still a lot of room to improve and further develop.
 
 
 \pagebreak
