@@ -39,7 +39,7 @@ defmodule Dispatcher do
 
       {:requestFile, filename} ->
         # search a given file
-        node = List.first(nodes)
+        node = Enum.random(nodes)
         send(node, {:requestFileDis, filename, {name, host}})
         dispatch({name, host}, nodes)
 

@@ -24,11 +24,11 @@ defmodule Communication do
           # own file
           IO.puts("Find file #{filename}")
           send(requester, {:findFile, filename})
-          ringReceive({name, host}, {nextnode, prevnode}, ownfiles)
         else
+          IO.puts("File #{filename} not found here, looking at next")
           send(nextnode, {:requestFile, filename, {{name, host}, requester}})
-          ringReceive({name, host}, {nextnode, prevnode}, ownfiles)
         end
+        ringReceive({name, host}, {nextnode, prevnode}, ownfiles)
 
       {:requestFile, filename, {requester, mainrequest}} ->
         # looking for a file
@@ -37,20 +37,18 @@ defmodule Communication do
             # loop on the ring
             IO.puts("File #{filename} not found")
             send(mainrequest, {:filenotfound, filename})
-            ringReceive({name, host}, {nextnode, prevnode}, ownfiles)
 
           Enum.member?(ownfiles, filename) ->
             # own file
             IO.puts("Find file #{filename}")
             send(mainrequest, {:findFile, filename})
-            ringReceive({name, host}, {nextnode, prevnode}, ownfiles)
 
           true ->
             # ask next node
-            IO.puts("File #{filename} not found here")
+            IO.puts("File #{filename} not found here, looking at next")
             send(nextnode, {:requestFile, filename, {requester, mainrequest}})
-            ringReceive({name, host}, {nextnode, prevnode}, ownfiles)
         end
+        ringReceive({name, host}, {nextnode, prevnode}, ownfiles)
 
       {:imprevious?, {pname, phost}} ->
         # send previous node
@@ -81,7 +79,7 @@ defmodule Communication do
     receive do
       {:imprevious?, prevnode} ->
         # will be my previous
-        send(prevnode, {:myprevious, prevnode})
+        send(prevnode, {:myprevious, {name, host}})
         ringReceive({name, host}, {prevnode, prevnode}, [])
     end
   end
