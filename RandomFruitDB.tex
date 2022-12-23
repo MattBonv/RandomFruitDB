@@ -4,6 +4,7 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{float}
 
 \usepackage{listings}
 \usepackage{hyperref}
@@ -85,20 +86,18 @@ Our solution bypasses a number of rules to create a simplificication of a real c
 Another simplificication we made is the creation and the use of a "dispatcher", which manages adding new nodes in the ring and manages data communication within the ring. This system is purely here for simplicity, and doesn't have any academic interest.
 \\\\
 Our simplified node will connect directly to the dispatcher when created, and the latter will assign to them a position in the ring. The node will then take care of notifying the other nodes of its presence. Our ring could in part refresh and correct its state (next node) on its own, but the feature wasn't developed enough to be able to avoid some unexpected errors.
-\\\\
-The main part of our system is the possibility to retreive data. Storing a file is simple, as the dispatcher randomly selects a node to store it (to avoid the use of a hash table). To retreive data, the dispatcher will randomly ask a node. The node will either answer with the file or it will ask the next node for it. A condition is put to avoid circular search, and when a file is found it is send directly to the dispatcher and does not circle back.
-
-\begin{figure}[!htbp]
+\begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{img/dispatch.png}
   \caption{A part of the dispatcher.}
   \label{figure 2 :}
 \end{figure}
-
+The main part of our system is the possibility to retreive data. Storing a file is simple, as the dispatcher randomly selects a node to store it (to avoid the use of a hash table). To retreive data, the dispatcher will randomly ask a node. The node will either answer with the file or it will ask the next node for it. A condition is put to avoid circular search, and when a file is found it is send directly to the dispatcher and does not circle back.
+\\\\
 For the frontend part of the project, we developed a simple HTML page of the database with minimal styling using JavaScript code, including colours and a hover effect for the buttons. 
 The page has three parts: the first one allows to search the database and should show the results of the search. The second is for adding a document. The last one is the list of documents added from this computer which appears as a list :
 
-\begin{figure}[!htbp]
+\begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{img/html.png}
   \caption{The HTML frontend.}
